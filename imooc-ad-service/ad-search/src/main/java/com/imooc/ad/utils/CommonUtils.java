@@ -1,0 +1,50 @@
+package com.imooc.ad.utils;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.time.DateUtils;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Supplier;
+
+@Slf4j
+public class CommonUtils {
+
+    public static <K, V> V getorCreate(K key, Map<K, V> map,
+                                       Supplier<V> factory){
+        return map.computeIfAbsent(key, k -> factory.get());
+    }
+
+    public static String stringConcat(String... args) {
+
+        StringBuilder result = new StringBuilder();
+        for(String arg : args) {
+            result.append(arg);
+            result.append("-");
+        }
+
+        result.deleteCharAt(result.length() - 1);
+        return result.toString();
+    }
+
+    // Mon Dec 31 18:00:00 CST 2018
+    public static Date parseStringDate(String dateString) {
+
+        try {
+            DateFormat dateFormat = new SimpleDateFormat(
+                    "EEE MMM DD HH:mm:ss zzz yyyy", Locale.US
+            );
+            return DateUtils.addHours(
+                    dateFormat.parse(dateString),
+                    6
+            );
+        } catch (ParseException ex) {
+            log.error("parseStringDate error: {}", dateString);
+            return null;
+        }
+    }
+}
